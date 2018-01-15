@@ -10,6 +10,7 @@ parser.add_option('--api_key', action="store" )
 parser.add_option('--password', action="store" )
 parser.add_option('--store_name', action="store" )
 parser.add_option('--csv_file', action="store" )
+parser.add_option('--variant_id', action="store" )
 
 options, args = parser.parse_args()
 
@@ -35,8 +36,12 @@ with open(options.csv_file) as csvfile:
     rowcount=0
     bad_results = []
     for row in readCSV:
-        
+
         variant_id = row[1]
+
+        if(options.variant_id and options.variant_id != variant_id):
+            continue
+
         variant_price = row[3]
         descr = "%s %s %s %s" % (row[6], row[7], row[8], row[9])
         
