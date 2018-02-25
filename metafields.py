@@ -33,9 +33,9 @@ with open(options.csv_file) as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     next(csvfile) # skip 2 lines
     next(csvfile)
-    last_product_name = '';
     rowcount=0
     bad_results = []
+    products = []
     for row in readCSV:
 
         product_name = row[0]
@@ -43,24 +43,23 @@ with open(options.csv_file) as csvfile:
 
         if(options.variant_id and options.variant_id != variant_id):
             continue
-        if(product_name == '' or last_product_name == product_name):
-            continue
 
-        variant_price = row[3]
-        descr = "%s %s %s %s" % (row[6], row[7], row[8], row[9])
-
+        time.sleep(2)
         v=shopify.Variant.find(variant_id)
-        
+        if(v.product_id in products):
+            continue
+        time.sleep(2)
         p=shopify.Product.find(v.product_id)
         print "Product: %s \n" % (p.title)
         
         metafield = shopify.Metafield({'value_type': 'integer', 'namespace': 'seo', 'value': 1, 'key': 'hidden'})
+        time.sleep(2)
         p.add_metafield(metafield)
                     
         if(rowcount % 2 == 0):
-            time.sleep(1)
+            time.sleep(2)
         rowcount += 1
-        last_product_name = product_name
+        products.append(v.product_id)
 
         
         
